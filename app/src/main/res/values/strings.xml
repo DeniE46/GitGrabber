@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">GitGrabber</string>
+    <string name="list_fragment">All repositories</string>
+    <string name="details_fragment">Repository details</string>
+    <string name="repo_size">repoSize: %1$s</string>
+    <string name="repo_language">repo language: %1$s</string>
+    <string name="repo_owner">repo Owner: %1$s</string>
+    <string name="repo_name">repo Name: %1$s </string>
+</resources>
