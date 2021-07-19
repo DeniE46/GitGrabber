@@ -6,4 +6,8 @@
     <string name="repo_language">repo language: %1$s</string>
     <string name="repo_owner">repo Owner: %1$s</string>
     <string name="repo_name">repo Name: %1$s </string>
+    <string name="connectivity_error">No Internet connection</string>
+    <string name="sticky_pin">stickey_pin</string>
+    <string name="title_repolist">List Module</string>
+    <string name="title_repodetailed">Detailed Module</string>
 </resources>

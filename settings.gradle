@@ -1,2 +1,5 @@
+include ':repoDetailed'
+include ':repoList'
+include ':benchmark'
 include ':app'
 rootProject.name = "GitGrabber"

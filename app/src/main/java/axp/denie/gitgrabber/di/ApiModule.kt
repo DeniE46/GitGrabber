@@ -1,10 +1,12 @@
 package axp.denie.gitgrabber.di
 
-import axp.denie.gitgrabber.BuildConfig
+
+import androidx.viewbinding.BuildConfig
 import axp.denie.gitgrabber.api.ApiHelper
 import axp.denie.gitgrabber.api.ApiHelperImpl
 import axp.denie.gitgrabber.api.ApiService
 import axp.denie.gitgrabber.utils.Constants
+import com.facebook.stetho.okhttp3.StethoInterceptor
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -29,9 +31,11 @@ object ApiModule {
         loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         OkHttpClient.Builder()
             .addInterceptor(loggingInterceptor)
+            .addNetworkInterceptor(StethoInterceptor())
             .build()
     } else {
         OkHttpClient.Builder()
+            .addNetworkInterceptor(StethoInterceptor())
             .build()
     }
 
@@ -46,11 +50,13 @@ object ApiModule {
 
     @Singleton
     @Provides
-    fun provideApiService(retrofit: Retrofit) = retrofit.create(ApiService::class.java)
+    fun provideApiService(retrofit: Retrofit): ApiService = retrofit.create(ApiService::class.java)
 
 
     @Singleton
     @Provides
     fun provideApiHelper(apiHelper: ApiHelperImpl): ApiHelper = apiHelper
+
+
 
 }

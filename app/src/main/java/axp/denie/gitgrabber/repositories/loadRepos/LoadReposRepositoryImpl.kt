@@ -2,6 +2,7 @@ package axp.denie.gitgrabber.repositories.loadRepos
 
 import android.util.Log
 import axp.denie.gitgrabber.api.ApiHelper
+import axp.denie.gitgrabber.dao.DaoHelper
 import axp.denie.gitgrabber.dao.GitDao
 import axp.denie.gitgrabber.models.GitListModel
 import axp.denie.gitgrabber.utils.Resource
@@ -14,7 +15,7 @@ import javax.inject.Inject
 
 class LoadReposRepositoryImpl @Inject constructor(
     private val apiHelper: ApiHelper,
-    private val daoGitRepos: GitDao
+    private val daoHelper: DaoHelper
 ): LoadReposRepository {
 
     @ExperimentalCoroutinesApi
@@ -25,9 +26,9 @@ class LoadReposRepositoryImpl @Inject constructor(
             val response = apiHelper.getRepos()
             if(response.status == Status.SUCCESS) {
                 withContext(Dispatchers.IO) {
-                    val results = daoGitRepos.insertAllGitRepos(response.data!!)
+                    val results = daoHelper.insertAll(response.data!!)
                     Log.d("Repository", "getRepos: response successful + $results")
-                    val dataFromDb = daoGitRepos.getAllRepos() // returns new data
+                    val dataFromDb = daoHelper.getAllRepositories() // returns new data
                     Log.d("Repository", "getRepos: response successful + $dataFromDb")
                     state.value = Resource.success(dataFromDb)
                 }
@@ -35,7 +36,7 @@ class LoadReposRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
 
             withContext(Dispatchers.IO) {
-                val dataFromDb = daoGitRepos.getAllRepos()
+                val dataFromDb = daoHelper.getAllRepositories()
                 if(dataFromDb.isNotEmpty()){
                     state.value = Resource.success(dataFromDb)
                 } else {
@@ -51,10 +52,15 @@ class LoadReposRepositoryImpl @Inject constructor(
         lateinit var state: Resource<GitListModel>
         withContext(Dispatchers.IO){
             state = try {
-                val dataFromDb = daoGitRepos.getRepoById(repoId)
-                Resource.success(dataFromDb)
+                val dataFromDb = daoHelper.getRepositoryById(repoId)
+                if(dataFromDb != null){
+                    Resource.success(dataFromDb)
+                } else {
+                    Resource.error("e.message!!", null)
+                }
+
             } catch (e: java.lang.Exception) {
-                Resource.error(e.message!!, null)
+                Resource.error("e.message!!", null)
             }
         }
        return state

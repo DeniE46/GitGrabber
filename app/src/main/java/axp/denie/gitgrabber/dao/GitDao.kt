@@ -18,5 +18,8 @@ interface GitDao {
     fun getAllRepos(): List<GitListModel>
 
     @Query("SELECT * FROM repos WHERE id = :repoId")
-    fun getRepoById(repoId: Int): GitListModel
+    fun getRepoById(repoId: Int): GitListModel?
+
+    @Query("DELETE FROM repos")
+    fun clearGitRepos()
 }

@@ -1,7 +1,5 @@
 package axp.denie.gitgrabber.ui.list
 
-import android.content.res.Resources
-import android.provider.Settings.Global.getString
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -13,12 +11,15 @@ import axp.denie.gitgrabber.R
 import axp.denie.gitgrabber.models.GitListModel
 
 
-
-class GitModelAdapter(val onClickListener: (pos: Int)->Unit) : ListAdapter<GitListModel, GitModelAdapter.ViewHolder>(GitDiffCallback()) {
+class GitModelAdapter(
+    val onClickListener: (pos: Int)->Unit,
+    val resManager: ListResourceManager
+) : ListAdapter<GitListModel, GitModelAdapter.ViewHolder>(GitDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
                 .inflate(R.layout.fragment_item, parent, false)
+
         return ViewHolder(view, onClickListener)
     }
 
@@ -28,14 +29,15 @@ class GitModelAdapter(val onClickListener: (pos: Int)->Unit) : ListAdapter<GitLi
 
 
     inner class ViewHolder(view: View, onClickListener: (pos: Int) -> Unit) : RecyclerView.ViewHolder(view) {
+
         private lateinit var item: GitListModel
         private val projectName: TextView = view.findViewById(R.id.projectName)
         private val ownerName: TextView = view.findViewById(R.id.ownerName)
         private val language: TextView = view.findViewById(R.id.language)
         private val size: TextView = view.findViewById(R.id.size)
-        private val repoOwner = view.rootView.context.getString(R.string.repo_owner)
-        private val repoLanguage = view.rootView.context.getString(R.string.repo_language)
-        private val repoSize = view.rootView.context.getString(R.string.repo_size)
+        private val repoOwner = resManager.getRepoOwner() //view.rootView.context.getString(R.string.repo_owner)
+        private val repoLanguage = resManager.getRepoLanguage() //view.rootView.context.getString(R.string.repo_language)
+        private val repoSize = resManager.getRepoSize() //view.rootView.context.getString(R.string.repo_size)
         init{
             onClick()
         }
@@ -45,6 +47,7 @@ class GitModelAdapter(val onClickListener: (pos: Int)->Unit) : ListAdapter<GitLi
         }
 
         fun bind(gitModel: GitListModel){
+
             this.item = gitModel
             projectName.text = gitModel.name
             ownerName.text = String.format(repoOwner, gitModel.owner)
